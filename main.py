@@ -19,6 +19,7 @@ import sys
 WIDTH = 1024
 HEIGHT = 1024
 OUTPUT_NAME = "entry.png"
+ICON_SIZE = 40  # side of the small pictogram square on each story card
 
 PAPER = (246, 242, 230)
 INK = (18, 18, 18)
@@ -127,6 +128,22 @@ def _draw_lines(draw, lines, x, y, font, fill, leading):
     return y
 
 
+def _burst(draw, cx, cy, points, specs):
+    """A star-shaped explosion burst: concentric spiked polygons.
+
+    specs is a list of (radius, colour) pairs, drawn largest first.
+    Used by the tanker and tower icons so the two bursts stay identical
+    in style without duplicating the polygon maths.
+    """
+    for r, col in specs:
+        pts = []
+        for i in range(points):
+            ang = math.pi * 2 * i / points
+            rr = r if i % 2 == 0 else r * 0.55
+            pts.append((cx + rr * math.cos(ang), cy + rr * math.sin(ang)))
+        draw.polygon(pts, fill=col)
+
+
 def _draw_icon(draw, kind, x, y, s, color):
     """One small drawn pictogram per story, inside a square of side s."""
     if kind == "tanker":
@@ -136,14 +153,9 @@ def _draw_icon(draw, kind, x, y, s, color):
                      fill=(40, 40, 40))
         draw.rectangle([x + s // 2 - 10, y + s - 44, x + s // 2 + 10, y + s - 26],
                        fill=(120, 120, 120))
-        cx, cy = x + s - 10, y + 12
-        for r, col in ((12, (255, 200, 40)), (8, (255, 120, 20)), (4, (172, 30, 30))):
-            pts = []
-            for i in range(10):
-                ang = math.pi * 2 * i / 10
-                rr = r if i % 2 == 0 else r * 0.55
-                pts.append((cx + rr * math.cos(ang), cy + rr * math.sin(ang)))
-            draw.polygon(pts, fill=col)
+        # Explosion burst above the ship (10-point star, as drawn before).
+        _burst(draw, x + s - 10, y + 12, 10,
+               ((12, (255, 200, 40)), (8, (255, 120, 20)), (4, (172, 30, 30))))
     elif kind == "scales":
         draw.line([x + s // 2, y + 6, x + s // 2, y + s - 8], fill=color, width=4)
         draw.line([x + 6, y + 12, x + s - 6, y + 12], fill=color, width=4)
@@ -166,14 +178,8 @@ def _draw_icon(draw, kind, x, y, s, color):
         for yy in range(y + 12, y + s - 10, 10):
             draw.line([x + s // 2 - 12, yy, x + s // 2 + 12, yy],
                       fill=(255, 255, 255), width=2)
-        cx, cy = x + s - 8, y + 10
-        for r, col in ((10, (255, 200, 40)), (6, (255, 120, 20))):
-            pts = []
-            for i in range(10):
-                ang = math.pi * 2 * i / 10
-                rr = r if i % 2 == 0 else r * 0.55
-                pts.append((cx + rr * math.cos(ang), cy + rr * math.sin(ang)))
-            draw.polygon(pts, fill=col)
+        _burst(draw, x + s - 8, y + 10, 10,
+               ((10, (255, 200, 40)), (6, (255, 120, 20))))
     elif kind == "chart":
         bars = [14, 26, 20, 38]
         bw = (s - 8) // 4
@@ -210,6 +216,10 @@ def _draw_globe(draw, x, y, w, h):
 def draw_image():
     from PIL import Image, ImageDraw
 
+    # Layout grid, all in pixels on a 1024x1024 page:
+    #   masthead 0-134, lead card 150-418, story grid 434-974 (2 cols x 3 rows
+    #   of 478x172 cards with a 12px gutter), footer line at y=988.
+    #   Headlines wrap to at most two lines so every summary fits in full.
     img = Image.new("RGB", (WIDTH, HEIGHT), PAPER)
     draw = ImageDraw.Draw(img)
 
@@ -253,7 +263,8 @@ def draw_image():
         y = gy + row * (ch + gap)
         draw.rectangle([x, y, x + cw, y + ch], fill=CARD, outline=BORDER, width=2)
         draw.rectangle([x, y, x + cw, y + 8], fill=story["color"])
-        _draw_icon(draw, story["icon"], x + cw - 56, y + 16, 40, story["color"])
+        _draw_icon(draw, story["icon"], x + cw - 56, y + 16, ICON_SIZE,
+                   story["color"])
         draw.text((x + 16, y + 18), story["tag"], font=tag_font,
                   fill=story["color"])
         lines = _wrap(draw, story["headline"], card_head, cw - 88)
