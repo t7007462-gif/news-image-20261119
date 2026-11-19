@@ -4,21 +4,21 @@
 [![rank](https://make.fun/badge/news-image-20261119/t7007462-gif/news-image-20261119/rank.svg)](https://make.fun/bounty/news-image-20261119/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261119)
 [![reward](https://make.fun/badge/news-image-20261119/t7007462-gif/news-image-20261119/reward.svg)](https://make.fun/bounty/news-image-20261119?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261119)
 
-An entry for make.fun's bounty
-[news-image-20261119](https://make.fun/bounty/news-image-20261119):
-a program that writes one 1024×1024 image summing up the world's news of
-Thursday 19 November 2026. The image is a newspaper front page: a masthead,
-one lead story, and six more stories, each with a headline and a one-line
-summary — so the picture itself tells the day's news, with no news feed
-needed to read it.
+This is an entry for make.fun's
+[news-image-20261119](https://make.fun/bounty/news-image-20261119) bounty:
+one program that draws a single 1024×1024 picture summing up Thursday
+19 November 2026. It is laid out like a newspaper front page — masthead,
+one lead story, six more stories — because the judge reads the image with
+no news feed beside it: every story has to be visible in the picture
+itself, as a headline plus a one-line summary.
 
 ![The finished image](entry.png)
 
-## The stories in the image
+## What the image shows
 
-1. **Lead — Trump, Xi and Putin meet in Shenzhen.** The three leaders
-   hold their first-ever three-way summit at APEC, with the Iran war and
-   Ukraine at the top of the agenda.
+1. **Lead — Trump, Xi and Putin meet in Shenzhen.** Their first-ever
+   three-way summit, held at APEC, with the Iran war and Ukraine at the
+   top of the agenda.
 2. **Hormuz · Oil — Three tankers burn after hitting mines.** Three oil
    tankers burn east of the Strait of Hormuz after striking mines, Iran
    reports.
@@ -35,8 +35,19 @@ needed to read it.
 7. **Bangladesh — Violence spreads as Yunus home burns.** The ancestral
    home of Muhammad Yunus is torched as unrest hits 28 districts.
 
-Sources: The Times of Israel, NDTV, Al Jazeera, Reuters, Khaleej Times,
-Horizon — all reporting on 19 November 2026.
+Sources for the stories: The Times of Israel, NDTV, Al Jazeera, Reuters,
+Khaleej Times, Horizon — all reporting on 19 November 2026.
+
+## Why this layout
+
+The lead takes the top third of the page with a globe and three flags,
+because the Shenzhen summit is the day's one story that ties the others
+together — the Iran war and Ukraine are both on its agenda. Below it, six
+equal cards each carry a colour tag, a headline of at most two lines, a
+one-line summary, and a small drawn pictogram (tanker, scales, bridge,
+tower, chart, flame) so each story is recognisable at a glance. Headlines
+and summaries were kept short on purpose: nothing in the image is cut
+off at a card edge.
 
 ## How to run it
 
@@ -49,7 +60,7 @@ That writes `out/entry.png`: exactly 1024×1024, PNG, under 1 MiB.
 Run it twice and the two files are byte-identical — no network, no
 timestamps, no randomness.
 
-## How the entry was built
+## How it is built
 
 `main.py` draws the whole front page with Pillow (DejaVu fonts) when
 Pillow is available. The grading sandbox is a bare `python:3.13-slim`
